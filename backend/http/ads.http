@@ -1,0 +1,23 @@
+GET http://localhost:3000/ads
+
+### CREATE
+POST http://localhost:3000/ads
+Content-Type: application/json
+
+{
+  "title": "TOTO",
+  "description": "flsdhfljkdshfjkldh dsfkjl hsklfhdslkj"
+}
+
+### DELETE
+DELETE http://localhost:3000/ads/3
+
+### UPDATE
+PUT http://localhost:3000/ads/2
+Content-Type: application/json
+
+{
+  "id": 2,
+  "title": "TITI",
+  "description": "jkhfdksjhhfk dsfkjl hsklfhdslkj"
+}
