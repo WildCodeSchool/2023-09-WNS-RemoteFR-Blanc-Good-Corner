@@ -1,16 +1,25 @@
 GET http://localhost:3000/ads
 
+### SELECT one
+GET http://localhost:3000/ads/1
+
+
 ### CREATE
 POST http://localhost:3000/ads
 Content-Type: application/json
 
 {
-  "title": "TOTO",
-  "description": "flsdhfljkdshfjkldh dsfkjl hsklfhdslkj"
+  "title": "Flat to rent",
+  "description": "Nice flat to rent in Paris",
+  "owner": "john@gmail.com",
+  "price": 400,
+  "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
+  "location": "Paris",
+  "createdAt": "2023-09-06T10:13:14.755Z"
 }
 
 ### DELETE
-DELETE http://localhost:3000/ads/3
+DELETE http://localhost:3000/ads/2
 
 ### UPDATE
 PUT http://localhost:3000/ads/2
@@ -18,6 +27,10 @@ Content-Type: application/json
 
 {
   "id": 2,
-  "title": "TITI",
-  "description": "jkhfdksjhhfk dsfkjl hsklfhdslkj"
+  "title": "Yellow car",
+  "description": "Yellow car to rent in Marseille",
+  "owner": "amy@gmail.com",
+  "price": 800,
+  "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
+  "location": "Marseille"
 }
