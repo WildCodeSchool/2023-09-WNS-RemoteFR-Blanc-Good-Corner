@@ -1,8 +1,7 @@
 GET http://localhost:3000/ads
 
 ### SELECT one
-GET http://localhost:3000/ads/1
-
+GET http://localhost:3000/ads/2
 
 ### CREATE
 POST http://localhost:3000/ads
@@ -19,10 +18,10 @@ Content-Type: application/json
 }
 
 ### DELETE
-DELETE http://localhost:3000/ads/2
+DELETE http://localhost:3000/ads/9
 
 ### UPDATE
-PUT http://localhost:3000/ads/2
+PUT http://localhost:3000/ads/8
 Content-Type: application/json
 
 {
