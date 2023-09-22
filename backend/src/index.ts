@@ -3,6 +3,9 @@ import express, { Request, Response } from 'express';
 import { Ad } from './entities/ad';
 import sqlite3 from 'sqlite3';
 import { dataSource } from './config/db';
+import { Category } from "./entities/category";
+import { Like } from "typeorm";
+import { Tag } from "./entities/tag";
 
 const db = new sqlite3.Database('./good_corner.sqlite');
 
@@ -14,7 +17,29 @@ app.use(express.json());
 
 // GET /ads
 app.get('/ads', async (request: Request, response: Response) => {
-  const ads = await Ad.find();
+  const categoryId: number = parseInt(request.query.categoryId as string);
+
+  let ads: Ad[];
+  if (categoryId) {
+    ads = await Ad.find({
+      relations: {
+        category: true
+      },
+      where: {
+        category: {
+          id: categoryId
+        }
+      }
+    });
+  }
+  else {
+    ads = await Ad.find({
+      relations: {
+        category: true
+      },
+    });
+  }
+
   response.send(ads);
 });
 
@@ -22,13 +47,18 @@ app.get('/ads', async (request: Request, response: Response) => {
 app.get('/ads/:id', async (request: Request, response: Response) => {
   const id: number = parseInt(request.params.id);
 
-  const ad = await Ad.findOneBy({ id: id });
+  const ad = await Ad.findOne({
+    relations: {
+      category: true
+    },
+    where: { id: id },
+  });
 
   response.send(ad);
 });
 
 // POST /ads
-app.post('/ads', (request: Request, response: Response) => {
+app.post('/ads', async (request: Request, response: Response) => {
   const ad = new Ad();
   ad.title = request.body.title;
   ad.description = request.body.description;
@@ -37,7 +67,28 @@ app.post('/ads', (request: Request, response: Response) => {
   ad.picture = request.body.picture;
   ad.location = request.body.location;
   ad.createdAt = new Date();
-  
+
+  const category = await Category.findOneBy({id: request.body.categoryId});
+  if (category) {
+    ad.category = category;
+  }
+
+  const tagsName = request.body.tags;
+  if (tagsName && tagsName.length > 0) {
+    const tagsEntities: Tag[] = [];
+    for (const tagName of tagsName) {
+      let tag = await Tag.findOneBy({name: tagName});
+      if (!tag) {
+        tag = new Tag();
+        tag.name = tagName;
+      }
+
+      tagsEntities.push(tag);
+    }
+
+    console.log(tagsEntities);
+    ad.tags = tagsEntities;
+  }
 
   ad.save();
 
@@ -56,9 +107,14 @@ app.put('/ads/:id', async (request: Request, response: Response) => {
     ad.price = request.body.price;
     ad.picture = request.body.picture;
     ad.location = request.body.location;
+
+    const category = await Category.findOneBy({id: request.body.categoryId});
+    if (category) {
+      ad.category = category;
+    }
+
     ad.save();
     response.send(ad);
-    return;
   }
   
   response.sendStatus(404);
@@ -75,6 +131,18 @@ app.delete('/ads/:id', async (request: Request, response: Response) => {
   await Ad.delete({ id: id });
 
   response.sendStatus(204);
+});
+
+app.get('/categories', async (request: Request, response: Response) => {
+  const terms = request.query.terms;
+
+  const categories = await Category.find({
+    where: {
+      name: Like(`%${terms}%`)
+    }
+  });
+
+  response.send(categories);
 });
 
 app.listen(port, () => {
