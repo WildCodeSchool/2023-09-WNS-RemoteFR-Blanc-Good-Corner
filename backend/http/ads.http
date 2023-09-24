@@ -1,23 +1,40 @@
-GET http://localhost:3000/ads
+GET http://localhost:3000/ads?categoryId=7
+
+### SELECT one
+GET http://localhost:3000/ads/1
 
 ### CREATE
 POST http://localhost:3000/ads
 Content-Type: application/json
 
 {
-  "title": "TOTO",
-  "description": "flsdhfljkdshfjkldh dsfkjl hsklfhdslkj"
+  "title": "Flat to rent",
+  "description": "40 m2 Flat car to rent in Paris",
+  "owner": "john@gmail.com",
+  "price": 2000,
+  "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
+  "location": "Paris",
+  "categoryId": 7,
+  "tags": ["fgdsg", "pause"]
 }
 
 ### DELETE
-DELETE http://localhost:3000/ads/3
+DELETE http://localhost:3000/ads/9
 
 ### UPDATE
-PUT http://localhost:3000/ads/2
+PUT http://localhost:3000/ads/8
 Content-Type: application/json
 
 {
   "id": 2,
-  "title": "TITI",
-  "description": "jkhfdksjhhfk dsfkjl hsklfhdslkj"
+  "title": "Yellow car",
+  "description": "Yellow car to rent in Marseille",
+  "owner": "amy@gmail.com",
+  "price": 800,
+  "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
+  "location": "Marseille"
 }
+
+
+### Categories
+GET http://localhost:3000/categories?terms=mode

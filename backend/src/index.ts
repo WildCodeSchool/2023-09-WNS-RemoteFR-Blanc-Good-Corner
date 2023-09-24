@@ -1,82 +1,151 @@
+import "reflect-metadata"
 import express, { Request, Response } from 'express';
-import { Ad } from './types/ad';
+import { Ad } from './entities/ad';
+import sqlite3 from 'sqlite3';
+import { dataSource } from './config/db';
+import { Category } from "./entities/category";
+import { Like } from "typeorm";
+import { Tag } from "./entities/tag";
+
+const db = new sqlite3.Database('./good_corner.sqlite');
 
 const app = express();
 
 const port: number = 3000;
 
-const ads: Ad[] = [
-  {
-    id: 1,
-    title: "Bike to sell",
-    description:
-      "My bike is blue, working fine. I'm selling it because I've got a new one",
-    owner: "bike.seller@gmail.com",
-    price: 100,
-    picture:
-      "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
-    location: "Paris",
-    createdAt: "2023-09-05T10:13:14.755Z",
-  },
-  {
-    id: 2,
-    title: "Car to sell",
-    description:
-      "My car is blue, working fine. I'm selling it because I've got a new one",
-    owner: "car.seller@gmail.com",
-    price: 10000,
-    picture:
-      "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-    location: "Paris",
-    createdAt: "2023-10-05T10:14:15.922Z",
-  },
-];
-
 app.use(express.json());
 
 // GET /ads
-app.get('/ads', (request: Request, response: Response) => {
+app.get('/ads', async (request: Request, response: Response) => {
+  const categoryId: number = parseInt(request.query.categoryId as string);
+
+  let ads: Ad[];
+  if (categoryId) {
+    ads = await Ad.find({
+      relations: {
+        category: true
+      },
+      where: {
+        category: {
+          id: categoryId
+        }
+      }
+    });
+  }
+  else {
+    ads = await Ad.find({
+      relations: {
+        category: true
+      },
+    });
+  }
+
   response.send(ads);
+});
+
+// GET /ads/:id
+app.get('/ads/:id', async (request: Request, response: Response) => {
+  const id: number = parseInt(request.params.id);
+
+  const ad = await Ad.findOne({
+    relations: {
+      category: true
+    },
+    where: { id: id },
+  });
+
+  response.send(ad);
 });
 
 // POST /ads
-app.post('/ads', (request: Request, response: Response) => {
-  const ids: number[] = ads.map<number>((ad) => ad.id);
+app.post('/ads', async (request: Request, response: Response) => {
+  const ad = new Ad();
+  ad.title = request.body.title;
+  ad.description = request.body.description;
+  ad.owner = request.body.owner;
+  ad.price = request.body.price;
+  ad.picture = request.body.picture;
+  ad.location = request.body.location;
+  ad.createdAt = new Date();
 
-  const ad: Ad = {
-    id: Math.max(...ids) + 1,
-    ...request.body
+  const category = await Category.findOneBy({id: request.body.categoryId});
+  if (category) {
+    ad.category = category;
   }
 
-  ads.push(ad);
-  response.send(ads);
+  const tagsName = request.body.tags;
+  if (tagsName && tagsName.length > 0) {
+    const tagsEntities: Tag[] = [];
+    for (const tagName of tagsName) {
+      let tag = await Tag.findOneBy({name: tagName});
+      if (!tag) {
+        tag = new Tag();
+        tag.name = tagName;
+      }
+
+      tagsEntities.push(tag);
+    }
+
+    console.log(tagsEntities);
+    ad.tags = tagsEntities;
+  }
+
+  ad.save();
+
+  response.send("OK");
 });
 
 // PUT /ads/:id
-app.put('/ads/:id', (request: Request, response: Response) => {
+app.put('/ads/:id', async (request: Request, response: Response) => {
   const id: number = parseInt(request.params.id);
   
-  const newAds: Ad[] = ads.map<Ad>((ad) => {
-    if (ad.id === id) {
-      return {
-        ...ad,
-        ...request.body
-      };
-    }
-    return ad;
-  });
+  const ad = await Ad.findOneBy({ id: id });
+  if (ad) {
+    ad.title = request.body.title;
+    ad.description = request.body.description;
+    ad.owner = request.body.owner;
+    ad.price = request.body.price;
+    ad.picture = request.body.picture;
+    ad.location = request.body.location;
 
-  response.send(newAds);
+    const category = await Category.findOneBy({id: request.body.categoryId});
+    if (category) {
+      ad.category = category;
+    }
+
+    ad.save();
+    response.send(ad);
+  }
+  
+  response.sendStatus(404);
 });
 
-app.delete('/ads/:id', (request: Request, response: Response) => {
+app.delete('/ads/:id', async (request: Request, response: Response) => {
   const id: number = parseInt(request.params.id);
 
-  ads.splice(ads.findIndex((ad) => ad.id === id));
+  /*const ad = await Ad.findOneBy({ id: id });
+  if (ad) {
+    ad.remove();
+  }*/
 
-  response.send(ads);
+  await Ad.delete({ id: id });
+
+  response.sendStatus(204);
+});
+
+app.get('/categories', async (request: Request, response: Response) => {
+  const terms = request.query.terms;
+
+  const categories = await Category.find({
+    where: {
+      name: Like(`%${terms}%`)
+    }
+  });
+
+  response.send(categories);
 });
 
 app.listen(port, () => {
+  dataSource.initialize();
   console.log(`Server started at http://localhost:${port}`);
 });
