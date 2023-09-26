@@ -1,7 +1,7 @@
-GET http://localhost:3000/ads?categoryId=7
+GET http://localhost:3001/ads
 
 ### SELECT one
-GET http://localhost:3000/ads/1
+GET http://localhost:3001/ads/2
 
 ### CREATE
 POST http://localhost:3000/ads
