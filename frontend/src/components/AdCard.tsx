@@ -1,11 +1,11 @@
-type AddCardProps = {
+type AdCardProps = {
   title: string;
   picture: string;
   price: number;
   link: string;
 }
 
-export default function AddCard({ title, picture, price, link }: AddCardProps) {
+export default function AdCard({ title, picture, price, link }: AdCardProps) {
   return (
     <div className="ad-card-container">
       <a className="ad-card-link" href={link}>

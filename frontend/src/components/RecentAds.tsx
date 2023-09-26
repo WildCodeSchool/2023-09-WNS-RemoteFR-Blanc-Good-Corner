@@ -1,7 +1,10 @@
-import AddCard from "./AdCard";
+import { useState } from "react";
+import AdCard from "./AdCard";
 import styles from "@/styles/RecentAds.module.css";
 
 export default function RecentAds() {
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
   const ads = [
     {
       title: "Table",
@@ -47,18 +50,25 @@ export default function RecentAds() {
     },
   ];
 
+  const addToTotalPrice = (price: number) => {
+    setTotalPrice(totalPrice + price)
+  }
+
   return (
     <>
       <h2>Annonces récentes</h2>
+      <p>Total price: {totalPrice} €</p>
       <section className={styles.recentAds}>
         {ads.map((ad, index) => (
-          <AddCard
-            key={index}
-            title={ad.title}
-            picture={ad.picture}
-            price={ad.price}
-            link={ad.link}
-          />
+          <div key={index}>
+            <AdCard
+              title={ad.title}
+              picture={ad.picture}
+              price={ad.price}
+              link={ad.link}
+            />
+            <button className="button" onClick={() => addToTotalPrice(ad.price)}>Add price to total</button>
+          </div>
         ))}
       </section>
     </>
