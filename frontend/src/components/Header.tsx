@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Category from "./Category";
 import axios from "axios";
+import Link from "next/link";
 
 export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -42,10 +43,7 @@ export default function Header() {
             </svg>
           </button>
         </form>
-        <a href="/post-ad" className="button link-button"
-          ><span className="mobile-short-label">Publier</span
-          ><span className="desktop-long-label">Publier une annonce</span></a
-        >
+        <Link href="/ads/new" className="button link-button"><span className="mobile-short-label">Publier</span><span className="desktop-long-label">Publier une annonce</span></Link>
       </div>
       <nav className="categories-navigation">
         {categories.map((category) => (
