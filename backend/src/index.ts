@@ -145,11 +145,17 @@ app.delete('/ads/:id', async (request: Request, response: Response) => {
 app.get('/categories', async (request: Request, response: Response) => {
   const terms = request.query.terms;
 
-  const categories = await Category.find({
-    where: {
-      name: Like(`%${terms}%`)
-    }
-  });
+  let categories: Category[] = [];
+  if (terms) {
+    categories = await Category.find({
+      where: {
+        name: Like(`%${terms}%`)
+      }
+    });
+  }
+  else {
+    categories = await Category.find();
+  }
 
   response.send(categories);
 });

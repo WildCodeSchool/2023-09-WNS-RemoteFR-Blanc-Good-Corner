@@ -1,4 +1,18 @@
+import { useEffect, useState } from "react";
+import Category from "./Category";
+import axios from "axios";
+
 export default function Header() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await axios.get<Category[]>('http://localhost:3001/categories');
+      setCategories(response.data);
+    }
+    fetchCategories();
+  }, []);
+
   return (
     <header className="header">
       <div className="main-menu">
@@ -34,19 +48,9 @@ export default function Header() {
         >
       </div>
       <nav className="categories-navigation">
-        <a href="" className="category-navigation-link">Ameublement</a> •
-        <a href="" className="category-navigation-link">Électroménager</a> •
-        <a href="" className="category-navigation-link">Photographie</a> •
-        <a href="" className="category-navigation-link">Informatique</a> •
-        <a href="" className="category-navigation-link">Téléphonie </a> •
-        <a href="" className="category-navigation-link">Vélos</a> •
-        <a href="" className="category-navigation-link">Véhicules</a> •
-        <a href="" className="category-navigation-link">Sport</a> •
-        <a href="" className="category-navigation-link">Habillement</a> •
-        <a href="" className="category-navigation-link">Bébé</a> •
-        <a href="" className="category-navigation-link">Outillage</a> •
-        <a href="" className="category-navigation-link">Services </a> •
-        <a href="" className="category-navigation-link">Vacances</a>
+        {categories.map((category) => (
+          <Category key={category.id} category={category} />
+        ))}
       </nav>
     </header>
   );

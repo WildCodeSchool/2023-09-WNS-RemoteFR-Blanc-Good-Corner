@@ -2,25 +2,24 @@ import { useEffect, useState } from "react";
 import AdCard from "./AdCard";
 import styles from "@/styles/RecentAds.module.css";
 import { Ad } from "@/types/ad.type";
+import axios from "axios";
+import { useSearchParams } from 'next/navigation'
+
 
 export default function RecentAds() {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [ads, setAds] = useState<Ad[]>([]); // AdCardProps[] is the type of the ads
-
-  /*fetch("http://localhost:3001/ads")
-    .then((response) => response.json())
-    .then((data) => setAds(data));
-*/
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("category");
 
   useEffect(() => {
-    const fetchAds = () => {
-      fetch("http://localhost:3001/ads")
-        .then((response) => response.json())
-        .then((data) => setAds(data));
+    const fetchAds = async () => {
+      const response = await axios.get<Ad[]>(`http://localhost:3001/ads?categoryId=${categoryId}`);
+      setAds(response.data);
     }
 
     fetchAds();
-  }, []);
+  }, [categoryId]);
 
   const addToTotalPrice = (price: number) => {
     setTotalPrice(totalPrice + price)
