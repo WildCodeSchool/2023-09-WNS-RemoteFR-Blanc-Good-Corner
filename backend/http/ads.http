@@ -1,10 +1,10 @@
-GET http://localhost:3000/ads?categoryId=7
+GET http://localhost:3001/ads?categoryId=
 
 ### SELECT one
-GET http://localhost:3000/ads/1
+GET http://localhost:3001/ads/2
 
 ### CREATE
-POST http://localhost:3000/ads
+POST http://localhost:3001/ads
 Content-Type: application/json
 
 {
@@ -37,4 +37,4 @@ Content-Type: application/json
 
 
 ### Categories
-GET http://localhost:3000/categories?terms=mode
+GET http://localhost:3001/categories?terms=

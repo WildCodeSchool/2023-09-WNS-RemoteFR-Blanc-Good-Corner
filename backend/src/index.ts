@@ -1,5 +1,6 @@
 import "reflect-metadata"
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import { Ad } from './entities/ad';
 import sqlite3 from 'sqlite3';
 import { dataSource } from './config/db';
@@ -11,8 +12,11 @@ const db = new sqlite3.Database('./good_corner.sqlite');
 
 const app = express();
 
-const port: number = 3000;
+const port: number = 3001;
 
+app.use(cors({
+  origin: 'http://localhost:3000'
+}))
 app.use(express.json());
 
 // GET /ads
@@ -46,6 +50,11 @@ app.get('/ads', async (request: Request, response: Response) => {
 // GET /ads/:id
 app.get('/ads/:id', async (request: Request, response: Response) => {
   const id: number = parseInt(request.params.id);
+
+  if (isNaN(id)) {
+    response.sendStatus(400);
+    return;
+  }
 
   const ad = await Ad.findOne({
     relations: {
@@ -136,11 +145,17 @@ app.delete('/ads/:id', async (request: Request, response: Response) => {
 app.get('/categories', async (request: Request, response: Response) => {
   const terms = request.query.terms;
 
-  const categories = await Category.find({
-    where: {
-      name: Like(`%${terms}%`)
-    }
-  });
+  let categories: Category[] = [];
+  if (terms) {
+    categories = await Category.find({
+      where: {
+        name: Like(`%${terms}%`)
+      }
+    });
+  }
+  else {
+    categories = await Category.find();
+  }
 
   response.send(categories);
 });
