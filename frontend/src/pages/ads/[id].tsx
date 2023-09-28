@@ -1,4 +1,5 @@
 import { Ad } from "@/types/ad.type";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -19,11 +20,30 @@ export default function AdsItemPage() {
     return <div>Loading...</div>;
   }
 
+  const deleteAd = async () => {
+    await axios.delete(`http://localhost:3001/ads/${ad.id}`)
+    router.push('/');
+  }
+
   return (
     <>
-      <h1>{ad.title}</h1>
-      <img src={ad.picture} />
-      <p>{ad.price} €</p>
+      <h2 className="ad-details-title">{ad.title}</h2>
+      <section className="ad-details">
+        <div className="ad-details-image-container">
+          <img className="ad-details-image" src={ad.picture} />
+        </div>
+        <div className="ad-details-info">
+          <div className="ad-details-price">{ad.price} €</div>
+          <div className="ad-details-description">
+            {ad.description}
+          </div>
+          <hr className="separator" />
+          <div className="ad-details-owner">
+            Annoncée publiée par <b>{ad.owner}</b> {ad.createdAt}.
+          </div>
+        </div>
+        <button className="button" onClick={deleteAd}>Supprimer</button>
+      </section>
     </>
   );
 }

@@ -16,15 +16,15 @@ function NewAd() {
   }, []);
 
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     const form: EventTarget = event.target;
     const formData = new FormData(form as HTMLFormElement);
 
     const formDataJson = Object.fromEntries(formData.entries());
     console.log(formDataJson);
-    axios.post('http://localhost:3001/ads', formDataJson)
-      .then(() => router.push('/ads'));
+    await axios.post('http://localhost:3001/ads', formDataJson)
+    router.push('/ads');
   }
 
   return (

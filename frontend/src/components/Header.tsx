@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Category from "./Category";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("category") ?? '';
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -13,6 +19,12 @@ export default function Header() {
     }
     fetchCategories();
   }, []);
+
+
+  const search = (event: FormEvent) => {
+    event.preventDefault();
+    router.push(`/?search=${searchText}&category=${categoryId}`);
+  }
 
   return (
     <header className="header">
@@ -23,8 +35,8 @@ export default function Header() {
             ><span className="desktop-long-label">THE GOOD CORNER</span></a
           >
         </h1>
-        <form className="text-field-with-button">
-          <input className="text-field main-search-field" type="search" />
+        <form className="text-field-with-button" onSubmit={search}>
+          <input className="text-field main-search-field" type="search" onChange={(event) => setSearchText(event.target.value)}/>
           <button className="button button-primary">
             <svg
               aria-hidden="true"

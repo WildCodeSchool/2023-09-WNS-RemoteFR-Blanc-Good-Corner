@@ -11,15 +11,16 @@ export default function RecentAds() {
   const [ads, setAds] = useState<Ad[]>([]); // AdCardProps[] is the type of the ads
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("category");
+  const search = searchParams.get("search") ?? "";
 
   useEffect(() => {
     const fetchAds = async () => {
-      const response = await axios.get<Ad[]>(`http://localhost:3001/ads?categoryId=${categoryId}`);
+      const response = await axios.get<Ad[]>(`http://localhost:3001/ads?categoryId=${categoryId}&search=${search}`);
       setAds(response.data);
     }
 
     fetchAds();
-  }, [categoryId]);
+  }, [categoryId, search]);
 
   const addToTotalPrice = (price: number) => {
     setTotalPrice(totalPrice + price)

@@ -22,6 +22,10 @@ app.use(express.json());
 // GET /ads
 app.get('/ads', async (request: Request, response: Response) => {
   const categoryId: number = parseInt(request.query.categoryId as string);
+  let search: string = request.query.search as string;
+  if (!search) {
+    search = '';
+  }
 
   let ads: Ad[];
   if (categoryId) {
@@ -31,8 +35,9 @@ app.get('/ads', async (request: Request, response: Response) => {
       },
       where: {
         category: {
-          id: categoryId
-        }
+          id: categoryId,
+        },
+        title: Like(`%${search}%`)
       }
     });
   }
@@ -41,6 +46,9 @@ app.get('/ads', async (request: Request, response: Response) => {
       relations: {
         category: true
       },
+      where: {
+        title: Like(`%${search}%`)
+      }
     });
   }
 

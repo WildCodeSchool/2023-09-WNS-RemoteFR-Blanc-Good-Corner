@@ -1,4 +1,4 @@
-GET http://localhost:3001/ads?categoryId=
+GET http://localhost:3001/ads?categoryId=5&search=null
 
 ### SELECT one
 GET http://localhost:3001/ads/2
