@@ -1,4 +1,7 @@
-GET http://localhost:3001/ads?categoryId=5&search=null
+GET http://localhost:3001/ads?categoryId=5&search=
+
+###
+GET http://localhost:3001/ads
 
 ### SELECT one
 GET http://localhost:3001/ads/2
@@ -33,4 +36,4 @@ Content-Type: application/json
 
 
 ### Categories
-GET http://localhost:3001/categories?terms=
+GET http://localhost:3001/categories?terms=te
