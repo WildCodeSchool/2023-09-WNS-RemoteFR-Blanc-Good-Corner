@@ -1,41 +1,51 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./category";
 import { Tag } from "./tag";
+import { Field, ObjectType } from "type-graphql";
 
+@ObjectType()
 @Entity()
 export class Ad extends BaseEntity {
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field()
   @Column({length: 100})
   title: string;
 
+  @Field()
   @Column()
   description: string;
 
+  @Field()
   @Column()
   owner: string;
 
+  @Field()
   @Column()
   price: number;
 
+  @Field()
   @Column()
   picture: string;
 
+  @Field()
   @Column()
   location: string;
 
+  @Field()
   @Column()
-  createdAt: Date;
+  createdAt?: Date;
 
   @ManyToOne(() => Category, category => category.ads)
-  category: Category;
+  category?: Category;
 
   @ManyToMany(() => Tag, {
     cascade: ["insert"]
   })
   @JoinTable()
-  tags: Tag[];
+  tags?: Tag[];
 
   constructor(datas: {
     title: string, 

@@ -13,7 +13,7 @@ export function findAdById(id: number): Promise<Ad | null> {
   });
 }
 
-export function search(categoryId: number, search: string): Promise<Ad[]> {
+export function search(categoryId: number | undefined = undefined, search: string = ''): Promise<Ad[]> {
   if (categoryId) {
     return Ad.find({
       relations: {
@@ -50,11 +50,16 @@ export async function create(adsData: {
   tags: string[]
 }): Promise<Ad> {
   const ad = new Ad(adsData);
-  const category = await Category.findOneBy({id: adsData.categoryId});
+  console.log(ad);
+  
+  ad.category = {
+    id: adsData.categoryId
+  } as Category;
+  // const category = await Category.findOneBy({id: adsData.categoryId});
 
-  if (category) {
-    ad.category = category;
-  }
+  // if (category) {
+  //   ad.category = category;
+  // }
 
   if (adsData.tags && adsData.tags.length > 0) {
     const tagsEntities: Tag[] = [];

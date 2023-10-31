@@ -12,9 +12,12 @@ Content-Type: application/json
 
 {
   "title": "Flat to rent",
+  "description": "fdsjkhfkjhdfskjh",
+  "owner": "mael@vincent.fr",
+  "location": "Lyon",
   "price": 2000,
   "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
-  "categoryId": 7
+  "categoryId": 188
 }
 
 ### DELETE
