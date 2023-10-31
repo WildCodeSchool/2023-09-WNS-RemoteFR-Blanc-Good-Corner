@@ -1,4 +1,5 @@
-import { Field, InputType } from "type-graphql";
+import { IsString, Max, MaxLength } from "class-validator";
+import { Field, InputType, Int } from "type-graphql";
 
 @InputType()
 export class CreateAdInputType {
@@ -23,6 +24,6 @@ export class CreateAdInputType {
   @Field()
   categoryId: number;
 
-  @Field(() => [String])
+  @Field(type => [String])
   tags: string[];
 }

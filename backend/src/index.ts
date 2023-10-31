@@ -12,7 +12,7 @@ const start = async () => {
 
   const schema = await buildSchema({
     resolvers: [CategoryResolver, AdResolver],
-    validate: false
+    validate: { forbidUnknownValues: false },
   });
 
   const server = new ApolloServer({

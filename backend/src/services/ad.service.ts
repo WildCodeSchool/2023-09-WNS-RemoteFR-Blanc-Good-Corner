@@ -13,7 +13,7 @@ export function findAdById(id: number): Promise<Ad | null> {
   });
 }
 
-export function search(categoryId: number | undefined = undefined, search: string = ''): Promise<Ad[]> {
+export function search(categoryId: number | undefined, search: string = ''): Promise<Ad[]> {
   if (categoryId) {
     return Ad.find({
       relations: {
@@ -28,6 +28,8 @@ export function search(categoryId: number | undefined = undefined, search: strin
     });
   }
   else {
+    console.log(search);
+    
     return Ad.find({
       relations: {
         category: true

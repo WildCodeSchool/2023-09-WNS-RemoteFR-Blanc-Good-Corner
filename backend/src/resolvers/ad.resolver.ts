@@ -9,8 +9,11 @@ import { UpdateAdInputType } from "../types/UpdateAdIputType";
 export class AdResolver {
 
   @Query(() => [Ad])
-  ads(@Arg("categoryId", { nullable: true }) categoryId?: number): Promise<Ad[]> {
-    return AdService.search(categoryId);
+  ads(
+    @Arg("search", { nullable: true }) search: string,
+    @Arg("categoryId", { nullable: true }) categoryId: number
+  ): Promise<Ad[]> {
+    return AdService.search(categoryId, search);
   }
 
   @Query(() => Ad)
@@ -18,7 +21,7 @@ export class AdResolver {
     return AdService.findAdById(id);
   }
 
-  @Mutation(() => Ad)
+  @Mutation(() => String)
   async deleteAd(@Arg("id") id: number): Promise<string> {
     await AdService.deleteAd(id);
     return "OK";

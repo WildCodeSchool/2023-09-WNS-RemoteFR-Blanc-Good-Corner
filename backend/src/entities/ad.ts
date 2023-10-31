@@ -38,6 +38,7 @@ export class Ad extends BaseEntity {
   @Column()
   createdAt?: Date;
 
+  // @Field(() => Category)
   @ManyToOne(() => Category, category => category.ads)
   category?: Category;
 
