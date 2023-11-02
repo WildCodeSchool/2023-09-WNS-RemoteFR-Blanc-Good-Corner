@@ -29,7 +29,7 @@ export default function RecentAds() {
 
   const { loading, error } = useQuery(GET_ALL_ADS, {
     variables: {
-      categoryId: categoryId !== "" ? categoryId : null,
+      categoryId: categoryId !== "" ? parseInt(categoryId as string) : null,
       search
     },
     onCompleted: (data => {

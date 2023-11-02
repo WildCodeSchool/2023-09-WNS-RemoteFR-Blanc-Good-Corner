@@ -1,5 +1,5 @@
 import { Ad } from "@/types/ad.type";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -32,20 +32,19 @@ export default function AdsItemPage() {
   const router = useRouter();
   const { id } = router.query;
   const [ad, setAd] = useState<Ad>();
-  const { loading, error, data, refetch } = useQuery(GET_ONE_AD, {
+  const [getAd, { loading, error }] = useLazyQuery(GET_ONE_AD, {
     variables: {
       getAdId: Number(id)
     },
     onCompleted: (data: {getAd: Ad}) => {
       setAd(data.getAd)
     },
-    skip: id === null
   });
   const [deleteAdRequest] = useMutation(DELETE_AD);
 
   useEffect(() => {
     if (id) {
-      refetch();
+      getAd();
     }
   }, [id])
 
