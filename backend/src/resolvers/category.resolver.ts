@@ -5,7 +5,7 @@ import * as CategoryService from "../services/category.service";
 @Resolver(Category)
 export class CategoryResolver {
   @Query(() => [Category])
-  async categories(@Arg("terms") terms: string): Promise<Category[]> {
+  async categories(@Arg("terms", { nullable: true }) terms: string): Promise<Category[]> {
     return CategoryService.getCategories(terms);
   }
 }

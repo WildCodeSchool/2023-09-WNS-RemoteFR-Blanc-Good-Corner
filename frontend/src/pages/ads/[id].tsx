@@ -1,27 +1,64 @@
 import { Ad } from "@/types/ad.type";
-import axios from "axios";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
+const GET_ONE_AD = gql`
+  query Ads($getAdId: Float!) {
+    getAd(id: $getAdId) {
+      createdAt
+      description
+      id
+      location
+      owner
+      picture
+      price
+      title
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const DELETE_AD = gql`
+  mutation DeleteAd($deleteAdId: Float!) {
+    deleteAd(id: $deleteAdId)
+  }
+`;
 
 export default function AdsItemPage() {
   const router = useRouter();
   const { id } = router.query;
-  const [ad, setAd] = useState<Ad | null>(null);
+  const [ad, setAd] = useState<Ad>();
+  const { loading, error, data, refetch } = useQuery(GET_ONE_AD, {
+    variables: {
+      getAdId: Number(id)
+    },
+    onCompleted: (data: {getAd: Ad}) => {
+      setAd(data.getAd)
+    },
+    skip: id === null
+  });
+  const [deleteAdRequest] = useMutation(DELETE_AD);
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:3001/ads/${id}`)
-        .then((response) => response.json())
-        .then((data) => setAd(data));
+      refetch();
     }
-  }, [id]);
+  }, [id])
 
-  if (!ad) {
-    return <div>Loading...</div>;
-  }
+  console.log(ad);
+  if (loading || !ad) return <p>Loading...</p>;
+  if (error) return <p>Error :-(</p>;
 
   const deleteAd = async () => {
-    await axios.delete(`http://localhost:3001/ads/${ad.id}`)
+    deleteAdRequest({
+      variables: {
+        deleteAdId: ad.id
+      }
+    })
     router.push('/');
   }
 

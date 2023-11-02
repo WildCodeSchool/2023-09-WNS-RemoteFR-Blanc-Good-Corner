@@ -2,9 +2,23 @@ import { useEffect, useState } from "react";
 import AdCard from "./AdCard";
 import styles from "@/styles/RecentAds.module.css";
 import { Ad } from "@/types/ad.type";
-import axios from "axios";
 import { useSearchParams } from 'next/navigation'
+import { gql, useQuery } from "@apollo/client";
 
+const GET_ALL_ADS = gql`
+  query Ads($categoryId: Float, $search: String) {
+  ads(categoryId: $categoryId, search: $search) {
+      createdAt
+      id
+      price
+      title
+      description
+      location
+      owner
+      picture
+    }
+  }
+`;
 
 export default function RecentAds() {
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -13,14 +27,18 @@ export default function RecentAds() {
   const categoryId = searchParams.get("category");
   const search = searchParams.get("search") ?? "";
 
-  useEffect(() => {
-    const fetchAds = async () => {
-      const response = await axios.get<Ad[]>(`http://localhost:3001/ads?categoryId=${categoryId}&search=${search}`);
-      setAds(response.data);
-    }
+  const { loading, error } = useQuery(GET_ALL_ADS, {
+    variables: {
+      categoryId: categoryId !== "" ? categoryId : null,
+      search
+    },
+    onCompleted: (data => {
+      setAds(data.ads);
+    })
+  });
 
-    fetchAds();
-  }, [categoryId, search]);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :-(</p>;
 
   const addToTotalPrice = (price: number) => {
     setTotalPrice(totalPrice + price)
@@ -31,7 +49,7 @@ export default function RecentAds() {
       <h2>Annonces récentes</h2>
       <p>Total price: {totalPrice} €</p>
       <section className={styles.recentAds}>
-        {ads.map((ad, index) => (
+        {ads.map((ad: Ad, index: number) => (
           <div key={index}>
             <AdCard
               title={ad.title}

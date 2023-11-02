@@ -1,20 +1,36 @@
 import { Category } from '@/types/category.type';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState } from 'react'
 
-function NewAd() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await axios.get<Category[]>('http://localhost:3001/categories');
-      setCategories(response.data);
+const GET_ALL_CATEGORIES = gql`
+  query Categories {
+    categories {
+      id
+      name
     }
-    fetchCategories();
-  }, []);
+  }
+`;
 
+const CREATE_AD = gql`
+  mutation Mutation($ad: CreateAdInputType!) {
+    createAd(ad: $ad) {
+      location
+      description
+      owner
+      picture
+      price
+      title
+      id
+    }
+  }
+`;
+
+function NewAd() {
+  const router = useRouter();
+  const { data } = useQuery(GET_ALL_CATEGORIES);
+  const [createAd] = useMutation(CREATE_AD);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -23,8 +39,23 @@ function NewAd() {
 
     const formDataJson = Object.fromEntries(formData.entries());
     console.log(formDataJson);
-    await axios.post('http://localhost:3001/ads', formDataJson)
-    router.push('/ads');
+
+    createAd({
+      variables: {
+        ad: {
+          title: formDataJson.title,
+          price: parseInt(formDataJson.price as string),
+          picture: formDataJson.picture,
+          description: formDataJson.description,
+          owner: formDataJson.owner,
+          location: formDataJson.location,
+          categoryId: parseInt(formDataJson.categoryId as string)
+        }
+      },
+      onCompleted: () => {
+        router.push('/');
+      }
+    })
   }
 
   return (
@@ -44,7 +75,7 @@ function NewAd() {
       <label>
         Catégorie
         <select name="categoryId">
-          {categories.map((category) => (
+          {data?.categories.map((category: Category) => (
             <option key={category.id} value={category.id}>{category.name}</option>
           ))}
         </select>

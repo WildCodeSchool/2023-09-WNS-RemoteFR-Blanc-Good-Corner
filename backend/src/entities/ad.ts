@@ -12,33 +12,33 @@ export class Ad extends BaseEntity {
 
   @Field()
   @Column({length: 100})
-  title: string;
+  title?: string;
 
   @Field()
   @Column()
-  description: string;
+  description?: string;
 
   @Field()
   @Column()
-  owner: string;
+  owner?: string;
 
   @Field()
   @Column()
-  price: number;
+  price?: number;
 
   @Field()
   @Column()
-  picture: string;
+  picture?: string;
 
   @Field()
   @Column()
-  location: string;
+  location?: string;
 
   @Field()
   @Column()
   createdAt?: Date;
 
-  // @Field(() => Category)
+  @Field(() => Category)
   @ManyToOne(() => Category, category => category.ads)
   category?: Category;
 

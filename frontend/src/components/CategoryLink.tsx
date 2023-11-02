@@ -6,7 +6,7 @@ type CategoryProps = {
   category: Category
 }
 
-function Category({ category }: CategoryProps) {
+function CategoryLink({ category }: CategoryProps) {
   return (
     <>
       <Link href={`/?category=${category.id}`} className="category-navigation-link">{ category.name }</Link> •
@@ -14,4 +14,4 @@ function Category({ category }: CategoryProps) {
   )
 }
 
-export default Category
+export default CategoryLink

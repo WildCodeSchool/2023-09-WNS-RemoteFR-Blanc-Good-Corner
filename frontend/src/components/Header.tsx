@@ -1,25 +1,30 @@
 import { FormEvent, useEffect, useState } from "react";
-import Category from "./Category";
+import CategoryLink from "./CategoryLink";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
+import { gql, useQuery } from "@apollo/client";
+import { Category } from "@/types/category.type";
+
+const GET_ALL_CATEGORIES = gql`
+  query Categories {
+    categories {
+      id
+      name
+    }
+  }
+`;
 
 export default function Header() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("category") ?? '';
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const response = await axios.get<Category[]>('http://localhost:3001/categories');
-      setCategories(response.data);
-    }
-    fetchCategories();
-  }, []);
-
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error :-(</p>;
 
   const search = (event: FormEvent) => {
     event.preventDefault();
@@ -58,8 +63,8 @@ export default function Header() {
         <Link href="/ads/new" className="button link-button"><span className="mobile-short-label">Publier</span><span className="desktop-long-label">Publier une annonce</span></Link>
       </div>
       <nav className="categories-navigation">
-        {categories.map((category) => (
-          <Category key={category.id} category={category} />
+        {data?.categories.map((category: Category) => (
+          <CategoryLink key={category.id} category={category} />
         ))}
       </nav>
     </header>

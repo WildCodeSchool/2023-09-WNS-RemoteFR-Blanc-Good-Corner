@@ -24,6 +24,6 @@ export class CreateAdInputType {
   @Field()
   categoryId: number;
 
-  @Field(type => [String])
+  @Field(type => [String],{nullable: true})
   tags: string[];
 }
