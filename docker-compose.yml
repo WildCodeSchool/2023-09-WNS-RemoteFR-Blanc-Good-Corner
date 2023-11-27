@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - 4000:3001
+    volumes:
+      - ./backend/good_corner_typeorm.sqlite:/app/good_corner_typeorm.sqlite
+      - ./backend/src:/app/src:rw
+      - ./backend/migrations:/app/migrations:rw
