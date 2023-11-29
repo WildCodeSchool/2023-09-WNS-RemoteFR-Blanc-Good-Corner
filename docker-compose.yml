@@ -8,8 +8,9 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
-      - ./backend/good_corner_typeorm.sqlite:/app/good_corner_typeorm.sqlite
+      # - ./backend/good_corner_typeorm.sqlite:/app/good_corner_typeorm.sqlite
       - ./backend/src:/app/src:rw
+      - ./backend/package.json:/app/package.json:rw
       - ./backend/migrations:/app/migrations:rw
 
   frontend:
@@ -23,3 +24,25 @@ services:
       - WDS_SOCKET_HOST=127.0.0.1 
     volumes:
       - ./frontend/src:/app/src:rw
+      - ./frontend/package.json:/app/package.json:rw
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: goodcorner
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: goodcornerdb
+      PGDATA: customDataFolder
+    volumes:
+      - ./dbData:/var/lib/postgresql/data/customDataFolder
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d goodcornerdb -U goodcorner" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
