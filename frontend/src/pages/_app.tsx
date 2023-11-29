@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 
 const client = new ApolloClient({
-  uri: "http://localhost:3001/graphql",
+  uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache()
 });
 
