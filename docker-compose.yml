@@ -42,6 +42,14 @@ services:
       timeout: 5s
       retries: 10
 
+  images:
+    build: ./images
+    volumes:
+      - ./images/src:/app/src
+      - ./images/uploads:/app/uploads
+    ports:
+      - 8000:8000
+
   adminer:
     image: adminer
     ports:
