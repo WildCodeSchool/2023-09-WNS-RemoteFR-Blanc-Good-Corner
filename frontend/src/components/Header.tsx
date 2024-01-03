@@ -31,6 +31,11 @@ export default function Header() {
     router.push(`/?search=${searchText}&category=${categoryId}`);
   }
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    router.push("/signin");
+  }
+
   return (
     <header className="header">
       <div className="main-menu">
@@ -61,6 +66,7 @@ export default function Header() {
           </button>
         </form>
         <Link href="/ads/new" className="button link-button"><span className="mobile-short-label">Publier</span><span className="desktop-long-label">Publier une annonce</span></Link>
+        <div className="button link-button" onClick={logout}><span className="mobile-short-label">Logout</span><span className="desktop-long-label">Logout</span></div>
       </div>
       <nav className="categories-navigation">
         {data?.categories.map((category: Category) => (
