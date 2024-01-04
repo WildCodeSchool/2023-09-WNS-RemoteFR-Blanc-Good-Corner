@@ -5,6 +5,7 @@ import { SearchAdsArgs } from "../types/SearchAdsArgs";
 import { CreateAdInputType } from "../types/CreateAdInputType";
 import { UpdateAdInputType } from "../types/UpdateAdIputType";
 import { Context } from "apollo-server-core";
+import { User } from "../entities/user";
 
 @Resolver(Ad)
 export class AdResolver {
@@ -26,15 +27,20 @@ export class AdResolver {
     return AdService.findAdById(id);
   }
 
+  @Authorized()
   @Mutation(() => String)
-  async deleteAd(@Arg("id") id: number): Promise<string> {
-    await AdService.deleteAd(id);
+  async deleteAd(@Arg("id") id: number, @Ctx("user") user: User): Promise<string> {
+    const ad = await AdService.findAdById(id);
+    if (ad?.user.id === user.id || user.role === 'ADMIN') {
+      await AdService.deleteAd(id);
+    }
     return "OK";
   }
 
+  @Authorized("USER")
   @Mutation(() => Ad)
-  createAd(@Arg("ad") ad: CreateAdInputType): Promise<Ad> {
-    return AdService.create({ ...ad });
+  createAd(@Arg("ad") ad: CreateAdInputType, @Ctx("user") user: User): Promise<Ad> {
+    return AdService.create({ ...ad, user });
   }
 
   @Mutation(() => Ad)

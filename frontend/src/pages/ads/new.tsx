@@ -1,6 +1,6 @@
+import isAuth from '@/components/secure/isAuth';
 import { Category } from '@/types/category.type';
 import { gql, useMutation, useQuery } from '@apollo/client';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState } from 'react'
 
@@ -97,4 +97,4 @@ function NewAd() {
   )
 }
 
-export default NewAd;
+export default isAuth(NewAd);

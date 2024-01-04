@@ -13,3 +13,10 @@ export function getCategories(terms: string = ''): Promise<Category[]> {
     return Category.find();
   }
 }
+
+export function create(name: string): Promise<Category> {
+  const category = new Category();
+  category.name = name;
+
+  return category.save();
+}

@@ -15,6 +15,7 @@ export class User extends BaseEntity {
   @Column()
   hashedPassword: string;
 
+  @Field()
   @Column()
   role: string;
 }

@@ -2,12 +2,14 @@ import { DeleteResult, Like } from "typeorm";
 import { Ad } from "../entities/ad";
 import { Category } from "../entities/category";
 import { Tag } from "../entities/tag";
+import { User } from "../entities/user";
 
 export function findAdById(id: number): Promise<Ad | null> {
   return Ad.findOne({
     relations: {
       category: true,
-      tags: true
+      tags: true,
+      user: true
     },
     where: { id: id },
   });
@@ -49,10 +51,10 @@ export async function create(adsData: {
   picture: string,
   location: string,
   categoryId: number,
-  tags: string[]
+  tags: string[],
+  user: User
 }): Promise<Ad> {
   const ad = new Ad(adsData);
-  console.log(ad);
   
   ad.category = {
     id: adsData.categoryId

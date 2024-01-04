@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGe
 import { Category } from "./category";
 import { Tag } from "./tag";
 import { Field, ObjectType } from "type-graphql";
+import { User } from "./user";
 
 @ObjectType()
 @Entity()
@@ -38,6 +39,9 @@ export class Ad extends BaseEntity {
   @Column()
   createdAt?: Date;
 
+  @ManyToOne(() => User)
+  user: User;
+
   @Field(() => Category)
   @ManyToOne(() => Category, category => category.ads)
   category?: Category;
@@ -55,6 +59,7 @@ export class Ad extends BaseEntity {
     price: number,
     picture: string,
     location: string,
+    user: User
   } | null = null) {
     super();
     if (datas) {
@@ -64,6 +69,7 @@ export class Ad extends BaseEntity {
       this.price = datas.price;
       this.picture = datas.picture;
       this.location = datas.location;
+      this.user = datas.user;
       this.createdAt = new Date();
     }
   }
