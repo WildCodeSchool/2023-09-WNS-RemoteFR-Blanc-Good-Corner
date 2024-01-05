@@ -1,9 +1,10 @@
 import Layout from "@/components/Layout";
 import "@/styles/globals.css";
-import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from "@apollo/client";
+import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink, from } from "@apollo/client";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 import { useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/authContext";
 
@@ -21,10 +22,21 @@ const authLink = setContext((_, { headers }) => {
       authorization: token ? `Bearer ${token}` : "",
     }
   }
-})
+});
+
+const errorLink = onError(({ graphQLErrors, operation }) => {
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      if (err.extensions.code === "UNAUTHENTICATED") {
+        localStorage.removeItem("token");
+        location.replace("/signin");
+      }
+    }
+  }
+});
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(from([errorLink, httpLink])),
   cache: new InMemoryCache()
 });
 

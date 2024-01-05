@@ -8,6 +8,7 @@ import * as dotenv from "dotenv";
 import { verifyToken } from "./services/auth.service";
 import { UserResolver } from "./resolvers/user.resolver";
 import { getByEmail } from "./services/user.service";
+import { GraphQLError } from 'graphql';
 
 const port: number = 3001;
 
@@ -29,13 +30,15 @@ const start = async () => {
             return true;
           }
           else {
-            return false;
+            throw new Error();
           }
         }
 
         return true;
       } catch(e) {
-        return false;
+        throw new GraphQLError('You are not authorized to perform this action.', null, null, null, null, null, {
+          code: 'UNAUTHENTICATED'
+        })
       }
     }
   });
