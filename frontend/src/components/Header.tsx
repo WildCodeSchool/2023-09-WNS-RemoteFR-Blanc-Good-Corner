@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import CategoryLink from "./CategoryLink";
 import axios from "axios";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import { gql, useQuery } from "@apollo/client";
 import { Category } from "@/types/category.type";
+import { AuthContext } from "@/contexts/authContext";
 
 const GET_ALL_CATEGORIES = gql`
   query Categories {
@@ -17,6 +18,7 @@ const GET_ALL_CATEGORIES = gql`
 `;
 
 export default function Header() {
+  const { authenticated, setAuthenticated } = useContext(AuthContext);
   const [searchText, setSearchText] = useState<string>('');
   const { loading, error, data } = useQuery(GET_ALL_CATEGORIES);
   const router = useRouter();
@@ -33,6 +35,7 @@ export default function Header() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    setAuthenticated(false);
     router.push("/signin");
   }
 
@@ -66,7 +69,9 @@ export default function Header() {
           </button>
         </form>
         <Link href="/ads/new" className="button link-button"><span className="mobile-short-label">Publier</span><span className="desktop-long-label">Publier une annonce</span></Link>
-        <div className="button link-button" onClick={logout}><span className="mobile-short-label">Logout</span><span className="desktop-long-label">Logout</span></div>
+        {
+          authenticated && <div className="button link-button" onClick={logout}><span className="mobile-short-label">Logout</span><span className="desktop-long-label">Logout</span></div>
+        }
       </div>
       <nav className="categories-navigation">
         {data?.categories.map((category: Category) => (

@@ -4,6 +4,8 @@ import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from "@ap
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { setContext } from "@apollo/client/link/context";
+import { useEffect, useState } from "react";
+import { AuthContext } from "@/contexts/authContext";
 
 
 const httpLink = createHttpLink({
@@ -27,12 +29,23 @@ const client = new ApolloClient({
 });
 
 function App({ Component, pageProps }: AppProps) {
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+  if (token) {
+    setAuthenticated(true);
+  }
+}, []);
+
   return (
-    <ApolloProvider client={client}>
-      <Layout>
-          <Component {...pageProps} />
-      </Layout>
-    </ApolloProvider>
+    <AuthContext.Provider value={{authenticated, setAuthenticated}}>
+      <ApolloProvider client={client}>
+        <Layout>
+            <Component {...pageProps} />
+        </Layout>
+      </ApolloProvider>
+    </AuthContext.Provider>
   );
 }
 
