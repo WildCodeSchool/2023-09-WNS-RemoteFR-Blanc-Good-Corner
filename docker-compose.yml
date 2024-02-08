@@ -10,6 +10,7 @@ services:
     volumes:
       # - ./backend/good_corner_typeorm.sqlite:/app/good_corner_typeorm.sqlite
       - ./backend/.env:/app/.env:rw
+      - ./backend/jest.config.js:/app/jest.config.js:rw
       - ./backend/src:/app/src:rw
       - ./backend/node_modules:/app/node_modules
       - ./backend/package.json:/app/package.json:rw
