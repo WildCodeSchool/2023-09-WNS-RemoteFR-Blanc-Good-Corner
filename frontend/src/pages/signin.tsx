@@ -38,12 +38,12 @@ export default function SignInPage() {
   return (
     <div>
       <label>Login</label>
-      <input onChange={(e) => {
+      <input data-test-id="email" onChange={(e) => {
         setEmail(e.target.value)
       }} />
       <br/>
       <label>Password</label>
-      <input type="password" onChange={(e) => {
+      <input data-test-id="password" type="password" onChange={(e) => {
         setPassword(e.target.value)
       }}/>
       <button onClick={() => {signIn()}}>
