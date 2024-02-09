@@ -10,7 +10,7 @@ import { AuthContext } from "@/contexts/authContext";
 
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
 })
 
 const authLink = setContext((_, { headers }) => {
