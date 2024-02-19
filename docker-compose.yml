@@ -23,8 +23,11 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./frontend/src:/app/src:rw
-      - ./frontend/package.json:/app/package.json:rw
+      - ./frontend:/app:rw,cached
+      # - ./frontend/node_modules:/app/node_modules
+      # - ./frontend/jest.config.ts:/app/jest.config.ts:rw
+      # - ./frontend/jest.setup.ts:/app/jest.setup.ts:rw
+      # - ./frontend/package.json:/app/package.json:rw
 
   db:
     image: postgres
