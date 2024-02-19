@@ -6,7 +6,7 @@ describe("Counter", () => {
   it("renders the counter component", () => {
     const ad = {
       title: "Test Ad",
-      picture: "test.jpg",
+      picture: "testt.jpg",
       price: 100,
       link: "https://test.com",
     };
