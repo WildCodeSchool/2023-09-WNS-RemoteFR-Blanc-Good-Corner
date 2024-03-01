@@ -43,9 +43,9 @@ export default function Header() {
     <header className="header">
       <div className="main-menu">
         <h1>
-          <a href="/" className="button logo link-button"
+          <Link href="/" className="button logo link-button"
             ><span className="mobile-short-label">TGC</span
-            ><span className="desktop-long-label">THE GOOD CORNER</span></a
+            ><span className="desktop-long-label">THE GOOD CORNER</span></Link
           >
         </h1>
         <form className="text-field-with-button" onSubmit={search}>

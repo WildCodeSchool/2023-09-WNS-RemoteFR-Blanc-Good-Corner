@@ -10,7 +10,7 @@ import { GraphQLError } from 'graphql';
 import { ApolloServer } from "apollo-server";
 
 
-async function createServer(): Promise<ApolloServer> {
+async function createServer(customContext: any = undefined): Promise<ApolloServer> {
   dotenv.config();
   await dataSource.initialize();
 
@@ -41,9 +41,10 @@ async function createServer(): Promise<ApolloServer> {
     }
   });
 
+
   return new ApolloServer({
     schema,
-    context: ({ req }) => {
+    context: customContext ? customContext : ({ req }) => {
       if (
         req?.headers.authorization === undefined ||
         process.env.JWT_SECRET_KEY === undefined

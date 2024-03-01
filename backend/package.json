@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev ./src/index.ts",
+    "dev": "ts-node-dev ./src/index.ts",
+    "build": "tsc",
+    "start": "node build/src/index.js",
     "test": "jest",
     "migration:create": "typeorm-ts-node-commonjs migration:create",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/db.ts",

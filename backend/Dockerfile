@@ -10,4 +10,4 @@ RUN npm i
 COPY src src
 COPY migrations migrations
 
-CMD npm start
+CMD npm run dev
