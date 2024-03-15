@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+      - name: Execute migrations
+        run: npm run migration:up
       - name: Go to backend and run tests
         env:
           JWT_SECRET_KEY: secret
