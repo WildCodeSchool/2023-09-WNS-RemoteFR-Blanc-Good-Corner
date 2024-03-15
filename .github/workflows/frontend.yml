@@ -31,14 +31,3 @@ jobs:
           context: "{{defaultContext}}:frontend"
           file: build.Dockerfile
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/thegoodcorner-frontend:latest
-  test-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Launch backend and db docker services
-        run: docker-compose up backend db -d
-      - name: Launch test directly on docker backend container
-        run: docker exec -it $(docker ps -q -f name=backend) npm run test
-      - name: Stop docker containers
-        run: docker-compose down

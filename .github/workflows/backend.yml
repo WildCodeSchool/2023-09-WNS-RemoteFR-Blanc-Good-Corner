@@ -5,10 +5,29 @@ on: push
 jobs:
   test-backend:
     runs-on: ubuntu-latest
+    container: node:lts-alpine
+
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_DB: goodcornerdb
+          POSTGRES_USER: goodcorner
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Go to backend and run tests
+        env:
+          JWT_SECRET_KEY: secret
         run: cd backend && npm i && npm test
 
   # docker:
