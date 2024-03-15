@@ -1,5 +1,7 @@
 import { ApolloServer, gql } from "apollo-server"
 import createServer from "../config/server";
+import * as CategoryService from "../services/category.service";
+
 
 describe("Category resolver", () => {
   let server: ApolloServer;
@@ -26,6 +28,10 @@ describe("Category resolver", () => {
   });
 
   it("should return only specific categories",  async () => {
+    CategoryService.create("Voiture");
+    CategoryService.create("Immobilier");
+    CategoryService.create("Jouet");
+
     const categoriesQuery = gql`
       query Categories {
         categories {
