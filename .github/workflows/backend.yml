@@ -28,11 +28,11 @@ jobs:
       - name: Install dependancies
         run: cd backend && npm i
       - name: Execute migrations
-        run: npm run migration:up
+        run: cd backend && npm run migration:up
       - name: Go to backend and run tests
         env:
           JWT_SECRET_KEY: secret
-        run: npm test
+        run: cd backend && npm test
 
   # docker:
   #   needs: test-backend
