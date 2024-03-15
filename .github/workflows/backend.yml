@@ -2,6 +2,14 @@ name: jest-and-docker-ci
 
 on: push
 
+env:
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+  POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+
 jobs:
   test-backend:
     runs-on: ubuntu-latest
@@ -30,13 +38,6 @@ jobs:
       - name: Execute migrations
         run: cd backend && npm run migration:up
       - name: Go to backend and run tests
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
         run: cd backend && npm test
 
   docker:
