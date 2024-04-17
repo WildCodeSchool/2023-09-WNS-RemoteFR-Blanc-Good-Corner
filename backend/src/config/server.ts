@@ -8,6 +8,7 @@ import { verifyToken } from "../services/auth.service";
 import { getByEmail } from "../services/user.service";
 import { GraphQLError } from 'graphql';
 import { ApolloServer } from "apollo-server";
+import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core';
 
 
 async function createServer(customContext: any = undefined): Promise<ApolloServer> {
@@ -41,6 +42,10 @@ async function createServer(customContext: any = undefined): Promise<ApolloServe
     }
   });
 
+  const plugins = [];
+  if (process.env.NODE_ENV === 'production') {
+    plugins.push(ApolloServerPluginLandingPageDisabled());
+  }
 
   return new ApolloServer({
     schema,
@@ -61,6 +66,9 @@ async function createServer(customContext: any = undefined): Promise<ApolloServe
         }
       }
     },
+    plugins: [
+      ...plugins
+    ]
   });
 }
 

@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  backend:
+    image: mvkirk/thegoodcorner-backend:latest
+    env_file: .env.backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: mvkirk/thegoodcorner-frontend:latest
+    env_file: .env.frontend
+
+  db:
+    image: postgres
+    restart: always
+    env_file: .env.db
+    volumes:
+      - ./dbData:/var/lib/postgresql/data/customDataFolder
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d goodcornerdb -U goodcorner" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  nginx:
+    image: nginx:1.21.3
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx

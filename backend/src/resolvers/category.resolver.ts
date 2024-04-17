@@ -10,7 +10,6 @@ export class CategoryResolver {
   }
 
 
-  @Authorized("ADMIN")
   @Mutation(() => Category)
   async createCategory(@Arg("name") name: string): Promise<Category> {
     return CategoryService.create(name)

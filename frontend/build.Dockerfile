@@ -15,6 +15,9 @@ COPY src src
 # Génère le dossier node_modules
 RUN npm i
 
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+
 # Génère le dossier .next
 RUN npm run build 
 

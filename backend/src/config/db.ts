@@ -1,8 +1,11 @@
+import * as dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { Ad } from "../entities/ad";
 import { Category } from "../entities/category";
 import { Tag } from "../entities/tag";
 import { User } from "../entities/user";
+
+dotenv.config();
 
 export const dataSource = new DataSource({
   type: "postgres",
@@ -14,5 +17,5 @@ export const dataSource = new DataSource({
   entities: [Ad, Category, Tag, User],
   logging: true,
   synchronize: false,
-  migrations: ["migrations/*.ts"],
+  migrations: ["migrations/*.{ts,js}"],
 });

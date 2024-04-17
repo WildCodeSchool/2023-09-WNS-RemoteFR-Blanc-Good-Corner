@@ -2,3 +2,6 @@ node_modules
 *.sqlite
 */.env
 */build
+.DS_Store
+.env*
+*.log
