@@ -1,7 +1,7 @@
 export default function AboutPage() {
   return (
     <>
-      About
+      About the Good Corner
     </>
   );
 }
