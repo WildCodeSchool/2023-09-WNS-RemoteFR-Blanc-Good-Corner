@@ -1,6 +1,9 @@
-name: jest-and-docker-ci
+name: backend-actions
 
-on: push
+on:
+  push:
+    paths:
+      - "backend/**"
 
 env:
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}

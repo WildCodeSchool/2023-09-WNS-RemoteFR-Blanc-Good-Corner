@@ -1,6 +1,9 @@
-name: jest-and-docker-ci
+name: frontend-actions
 
-on: push
+on:
+  push:
+    paths:
+      - "frontend/**"
 
 jobs:
   test-front:
