@@ -37,9 +37,9 @@ services:
       POSTGRES_USER: goodcorner
       POSTGRES_PASSWORD: password
       POSTGRES_DB: goodcornerdb
-      PGDATA: customDataFolder
+      PGDATA: /var/lib/postgresql/data/customDataFolder
     volumes:
-      - ./dbData:/var/lib/postgresql/data/customDataFolder
+      - ./dbData:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d goodcornerdb -U goodcorner" ]
       interval: 5s
