@@ -9,9 +9,19 @@ import { getByEmail } from "../services/user.service";
 import { GraphQLError } from 'graphql';
 import { ApolloServer } from "apollo-server";
 import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core';
+import { createClient } from "redis";
 
+export const redisClient = createClient({ url: "redis://redis" });
+
+redisClient.on("error", (err) => {
+  console.log("Redis Client Error", err);
+});
+redisClient.on("connect", () => {
+  console.log("redis connected");
+});
 
 async function createServer(customContext: any = undefined): Promise<ApolloServer> {
+  await redisClient.connect();
   dotenv.config();
   await dataSource.initialize();
 
@@ -61,7 +71,6 @@ async function createServer(customContext: any = undefined): Promise<ApolloServe
 
           return { token: bearer };
         } catch (e) {
-          console.log(e);
           return {};
         }
       }

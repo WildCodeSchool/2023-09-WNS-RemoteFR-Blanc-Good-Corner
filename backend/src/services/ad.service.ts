@@ -3,36 +3,54 @@ import { Ad } from "../entities/ad";
 import { Category } from "../entities/category";
 import { Tag } from "../entities/tag";
 import { User } from "../entities/user";
+import { redisClient } from "../config/server";
+import * as cacheService from "./cache.service";
 
-export function findAdById(id: number): Promise<Ad | null> {
-  return Ad.findOne({
-    relations: {
-      category: true,
-      tags: true,
-      user: true
-    },
-    where: { id: id },
-  });
+export async function findAdById(id: number): Promise<Ad | null> {
+  const cacheKey = `Ad-details-${id}`;
+  let result;
+  result = await cacheService.getValue(cacheKey);
+
+  if (!result) {
+    result =  Ad.findOne({
+      relations: {
+        category: true,
+        tags: true,
+        user: true
+      },
+      where: { id: id },
+    });
+    cacheService.setValue(cacheKey, result);
+  }
+
+  return result;
 }
 
-export function search(categoryId: number | undefined, search: string = ''): Promise<Ad[]> {
+export async function search(categoryId: number | undefined, search: string = ''): Promise<Ad[]> {
+  const cacheKey = `Ad-${categoryId}-${search}`;
+  console.log(cacheKey);
+  let results;
+  results = await cacheService.getValue(cacheKey);
+
   if (categoryId) {
-    return Ad.find({
-      relations: {
-        category: true
-      },
-      where: {
-        category: {
-          id: categoryId,
+    if (!results) {
+      results = await Ad.find({
+        relations: {
+          category: true
         },
-        title: Like(`%${search}%`)
-      }
-    });
+        where: {
+          category: {
+            id: categoryId,
+          },
+          title: Like(`%${search}%`)
+        }
+      });
+
+      await cacheService.setValue(cacheKey, results);
+    }
   }
   else {
-    console.log(search);
-    
-    return Ad.find({
+    results = Ad.find({
       relations: {
         category: true
       },
@@ -40,7 +58,11 @@ export function search(categoryId: number | undefined, search: string = ''): Pro
         title: Like(`%${search}%`)
       }
     });
+
+    await cacheService.setValue(cacheKey, results);
   }
+
+  return results;
 }
 
 export async function create(adsData: {
@@ -103,10 +125,13 @@ export async function update(id: number, ad: Ad, categoryId: number): Promise<Ad
     if (category) {
       adToupdate.category = category;
     }
+
+    cacheService.invalidateValue(`Ad-details-${ad.id}`);
     return adToupdate.save();
   }
 }
 
 export function deleteAd(id: number): Promise<DeleteResult> {
+  cacheService.invalidateValue(`Ad-details-${id}`);
   return Ad.delete({ id: id });
 }
